@@ -1,0 +1,18 @@
+quarkus:
+  hibernate-orm:
+    database:
+      generation: drop-and-create
+  log:
+    level: INFO
+    category:
+      "com.heilig":
+        level: DEBUG
+
+  cxf:
+    path: /soap
+
+com:
+  heilig:
+    props:
+      pagination:
+        limit : 10

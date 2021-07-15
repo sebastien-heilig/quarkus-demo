@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:tns="http://demo.heilig.com/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://demo.heilig.com/xsd">
+
+  <xs:complexType name="userDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="id" type="xs:long"/>
+      <xs:element name="lastname" type="xs:string"/>
+      <xs:element name="firstname" type="xs:string"/>
+      <xs:element name="birthDate" type="xs:string"/>
+      <xs:element minOccurs="0" name="age" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="userDtoList">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="usersDto" nillable="true" type="tns:userDto"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="searchUsers">
+    <xs:complexContent>
+      <xs:extension base="tns:searchableItem">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+          <xs:element minOccurs="0" name="lastname" type="xs:string"/>
+          <xs:element minOccurs="0" name="firstname" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pageableItem">
+    <xs:sequence>
+      <xs:element name="result" type="xs:anyType"/>
+      <xs:element name="pagination" type="tns:pagination"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="pagination">
+    <xs:sequence>
+      <xs:element name="limit" type="xs:int" minOccurs="0"/>
+      <xs:element name="offset" type="xs:int" minOccurs="0"/>
+      <xs:element name="total" type="xs:long" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="searchableItem">
+    <xs:sequence>
+      <xs:element name="pagination" type="tns:pagination" minOccurs="0"/>
+      <xs:element name="sort" type="tns:map" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="sortOrder" final="restriction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="asc"/>
+      <xs:enumeration value="desc"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="map">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="entry">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="key" type="xs:string"/>
+            <xs:element minOccurs="0" name="value" type="xs:anyType"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="userDto" type="tns:userDto"/>
+  <xs:element name="usersDto" type="tns:userDtoList"/>
+  <xs:element name="searchUsers" type="tns:searchUsers"/>
+  <xs:element name="pageableItems" type="tns:pageableItem"/>
+
+</xs:schema>
