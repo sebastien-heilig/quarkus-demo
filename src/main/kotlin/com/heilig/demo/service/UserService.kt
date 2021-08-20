@@ -6,6 +6,7 @@ import com.heilig.demo.utils.DateUtils
 import com.heilig.demo.xsd.PageableItem
 import com.heilig.demo.xsd.SearchUsers
 import com.heilig.demo.xsd.UserDto
+import com.heilig.demo.xsd.UserDtoList
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -49,7 +50,9 @@ class UserService(val userRepository: UserRepository) {
         val response = userRepository.findByFiltersAnd(searchUsers)
         if (response.result != null) {
             val users: List<User> = response.result as List<User>
-            response.result = users.map { u -> u.toUserDto() }
+            var userDtoList = UserDtoList()
+            userDtoList.usersDto.addAll(users.map { u -> u.toUserDto() })
+            response.result = userDtoList
         }
         return response
     }

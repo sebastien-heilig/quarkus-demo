@@ -14,9 +14,9 @@ import java.util.*
 class DateUtils {
 
     companion object{
-        val logger: Logger = LoggerFactory.getLogger(DateUtils::class.java.name)
+        private val logger: Logger = LoggerFactory.getLogger(DateUtils::class.java.name)
 
-        val FORMATTER = DateTimeFormatter.ISO_DATE
+        private val FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_DATE
 
         fun format(localDate: LocalDate): String? {
             Objects.requireNonNull(localDate, "The given date cannot be null!")

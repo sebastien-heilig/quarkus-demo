@@ -63,7 +63,7 @@
 
   <!-- Set Service -->
   <wsdl:service name="demoService">
-    <wsdl:port binding="tns:demoBinding" name="demoPortType">
+    <wsdl:port binding="tns:demoBinding" name="userService">
       <wsdlsoap:address location="http://localhost:8080/soap/userService"/>
     </wsdl:port>
   </wsdl:service>

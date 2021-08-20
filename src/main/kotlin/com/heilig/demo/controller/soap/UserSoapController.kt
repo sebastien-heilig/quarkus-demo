@@ -16,7 +16,8 @@ import javax.xml.ws.Holder
 @WebService(
     portName = "DemoPortType", serviceName = "UserService",
     targetNamespace = "http://demo.heilig.com/wsdl",
-    endpointInterface = "com.heilig.demo.wsdl.DemoPortType"
+    endpointInterface = "com.heilig.demo.wsdl.DemoPortType",
+    name= "userService"
 )
 class UserSoapController(private val userService: UserService) : UserApi, DemoPortType {
 
@@ -25,8 +26,6 @@ class UserSoapController(private val userService: UserService) : UserApi, DemoPo
             user.value = createUser(userService, user.value)
         }
     }
-
-
 
     override fun retrieveUsers(searchUsers: SearchUsers?): PageableItem = retrieveUsers(userService, searchUsers)
 }
