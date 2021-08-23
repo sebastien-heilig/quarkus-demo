@@ -14,26 +14,26 @@ import org.slf4j.LoggerFactory
  * @author sebastien.heilig
  * @since 1.0.0
  */
-abstract class EntityRepository<T>(
+abstract class EntityRepository <T>(
     @ConfigProperty(name = "com.heilig.props.pagination.limit") private val defaultLimit: Int = 10,
     private val defaultOffset: Int = 0
-) : PanacheRepositoryBase<T, Long> {
+) : PanacheRepositoryBase<T, Long>{
 
     // Constants
     val and = " and "
     val or = " or "
 
-    //region: Public Methods
-
+    //region : Public Methods
     fun findAnyEntitiesByParams(pagination: Pagination, searchParams: Map<String, Any>?, andOr: String, sortParams: Map<String, SortOrder>?): PageableItem {
 
         validateOrInitOffsetAndLimit(pagination)
         val response = initPageableItemResponse(pagination)
         LOGGER.debug("limit -> {}, offset -> {}", response.pagination.limit, response.pagination.offset)
         if (searchParams == null) {
-            // no result
+            // no params
             LOGGER.debug("No search params")
             response.pagination.total = 0
+            response.result = findAll().page<T>(Page.of(response.pagination.offset, response.pagination.limit)).list<T>()
             return response
         }
         //results
@@ -44,44 +44,10 @@ abstract class EntityRepository<T>(
         return response
     }
 
-    fun findAnyEntitiesByParams(pagination: Pagination, searchParams: Map<String, Any>?, operators: List<String>, sortParams: Map<String, SortOrder>): PageableItem {
-
-        validateOrInitOffsetAndLimit(pagination)
-        val response = initPageableItemResponse(pagination)
-        if (searchParams == null) {
-            // no result
-            response.pagination.total = 0
-            return response
-        }
-        //results
-        val query = buildSearchQuery(searchParams, operators, sortParams)
-        response.pagination.total = query.count()
-        response.result = query.page<T>(Page.of(response.pagination.offset, response.pagination.limit)).list<T>()
-        return response
-    }
-
-    private fun initPageableItemResponse(pagination: Pagination): PageableItem {
-
-        val response = PageableItem()
-        response.pagination = Pagination()
-        response.pagination.limit = pagination.limit
-        response.pagination.offset = pagination.offset
-        return response
-    }
-
-    fun findAnyEntityByParams(searchParams: Map<String, Any>, andOr: String): T {
-
-        val results: List<T> = this.find(buildSearchQuery(searchParams, andOr)).list()
-        if (results.size != 1) {
-            throw RepositoryException("There is 0 or more results matching your request! '" + results.size + "' element(s)")
-        }
-        return results[0]
-    }
-
     //endregion
 
-    //region: Protected Methods
-    fun validateOrInitOffsetAndLimit(pagination: Pagination) {
+    //region Protected Methods
+    protected fun validateOrInitOffsetAndLimit(pagination: Pagination) {
 
         if (pagination.limit == null) {
             pagination.limit = defaultLimit
@@ -102,7 +68,16 @@ abstract class EntityRepository<T>(
     }
     //endregion
 
-    //region: Private Methods
+    //region : Private Methods
+    private fun initPageableItemResponse(pagination: Pagination): PageableItem {
+
+        val response = PageableItem()
+        response.pagination = Pagination()
+        response.pagination.limit = pagination.limit
+        response.pagination.offset = pagination.offset
+        return response
+    }
+
     private fun buildSearchQuery(searchParams: Map<String, Any>, andOr: String, sortParams: Map<String, SortOrder>?): PanacheQuery<T> {
 
         var query = buildSearchQuery(searchParams, andOr)
@@ -113,6 +88,7 @@ abstract class EntityRepository<T>(
         }
         return this.find(query, searchParams)
     }
+
 
     private fun buildSearchQuery(searchParams: Map<String, Any>, operators: List<String>, sortParams: Map<String, SortOrder>): PanacheQuery<T> {
 
@@ -163,6 +139,7 @@ abstract class EntityRepository<T>(
         return orderByQuery
     }
     //endregion
+
 }
 
 // Private Constants
